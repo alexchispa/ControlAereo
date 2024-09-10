@@ -10,6 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -20,34 +23,55 @@ public class Nave {
     @Column(name = "ID")
     private Long id;
 
+    @NotNull
     @Size(max = 200)
-    @Column(name = "NOMBRE")
+    @Column(nullable = false, name = "NOMBRE")
     private String nombre;
 
     @Size(max = 200)
-    @Column(name = "PILOTO")
+    @Column(nullable = true, name = "PILOTO")
     private String piloto;
 
-    @Size(max = 100)
-    @Column(name = "FECHA_SALIDA")
-    private String fecha_salida;
-
-    @Size(max = 100)
-    @Column(name = "FECHA_llegada")
-    private String fecha_llegada;
-
+    @NotNull
     @Size(max = 200)
-    @Column(name = "localizacion_salida")
-    private String localizacion_salida;
+    @Column(nullable = false, name = "COLORES")
+    private String colores;
 
+    @NotNull
     @Size(max = 200)
-    @Column(name = "localizacion_llegada")
-    private String localizacion_llegada;
+    @Column(nullable = false, name = "BASE")
+    private String base;
 
     @Size(max = 500)
-    @Column(name = "DESCRIPCION")
-    private String descripcion;
-    
+    @Column(nullable = true, name = "MODIFICACIONES")
+    private String modificaciones;
+
+    @NotNull
+    @Min(1900)
+    @Max(2100)
+    @Column(nullable = false, name = "ANYO_FABRICACION")
+    private Integer anyoFabricacion;
+
+    @NotNull
+    @Column(nullable = false, name = "PESO", columnDefinition = "DECIMAL(10, 3)")
+    private Double peso;
+
+    @NotNull
+    @Column(nullable = false, name = "LONGITUD", columnDefinition = "DECIMAL(10, 2)")
+    private Double longitud;
+
+    @NotNull
+    @Column(nullable = false, name = "BODEGA", columnDefinition = "DECIMAL(10, 2)")
+    private Double bodega;
+
+    @NotNull
+    @Column(nullable = false, name = "CARGA")
+    private Integer carga;
+
+    @NotNull
+    @Column(nullable = false, name = "CAPACIDAD_PERSONAS")
+    private Integer capacidadPersonas;
+
     @ManyToOne
     @JsonIgnoreProperties("naves")
     @JoinColumn(name = "TIPO_ID")
@@ -56,15 +80,17 @@ public class Nave {
     public Nave() {
     }
 
-    public Nave(Long id, String nombre, String piloto, String fecha_salida, String fecha_llegada, String localizacion_salida, String localizacion_llegada, String descripcion) {
+    public Nave(Long id, String nombre, String piloto, Double peso, Double longitud, Double bodega, Integer carga, Integer capacidadPersonas, Integer anyoFabricacion, Tipo tipo) {
         this.id = id;
         this.nombre = nombre;
         this.piloto = piloto;
-        this.fecha_salida = fecha_salida;
-        this.fecha_llegada = fecha_llegada;
-        this.localizacion_salida = localizacion_salida;
-        this.localizacion_llegada = localizacion_llegada;
-        this.descripcion = descripcion;
+        this.peso = peso;
+        this.longitud = longitud;
+        this.bodega = bodega;
+        this.carga = carga;
+        this.capacidadPersonas = capacidadPersonas;
+        this.anyoFabricacion = anyoFabricacion;
+        this.tipo = tipo;
     }
 
     public Long getId() {
@@ -83,36 +109,84 @@ public class Nave {
         this.nombre = nombre;
     }
 
-    public String getpiloto() {
+    public String getPiloto() {
         return piloto;
     }
 
-    public void setpiloto(String piloto) {
+    public void setPiloto(String piloto) {
         this.piloto = piloto;
     }
 
-    public String getfecha_salida() {
-        return fecha_salida;
+    public String getColores() {
+        return colores;
     }
 
-    public void setfecha_salida(String fecha_salida) {
-        this.fecha_salida = fecha_salida;
+    public void setColores(String colores) {
+        this.colores = colores;
     }
 
-    public String getlocalizacion_salida() {
-        return localizacion_salida;
+    public String getBase() {
+        return base;
     }
 
-    public void setlocalizacion_salida(String localizacion_salida) {
-        this.localizacion_salida = localizacion_salida;
+    public void setBase(String base) {
+        this.base = base;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getModificaciones() {
+        return modificaciones;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setModificaciones(String modificaciones) {
+        this.modificaciones = modificaciones;
+    }
+
+    public Integer getAnyoFabricacion() {
+        return anyoFabricacion;
+    }
+
+    public void setAnyoFabricacion(Integer anyoFabricacion) {
+        this.anyoFabricacion = anyoFabricacion;
+    }
+
+    public Double getPeso() {
+        return peso;
+    }
+
+    public void setPeso(Double peso) {
+        this.peso = peso;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public Double getBodega() {
+        return bodega;
+    }
+
+    public void setBodega(Double bodega) {
+        this.bodega = bodega;
+    }
+
+    public Integer getCarga() {
+        return carga;
+    }
+
+    public void setCarga(Integer carga) {
+        this.carga = carga;
+    }
+
+    public Integer getCapacidadPersonas() {
+        return capacidadPersonas;
+    }
+
+    public void setCapacidadPersonas(Integer capacidadPersonas) {
+        this.capacidadPersonas = capacidadPersonas;
     }
 
     public Tipo getTipo() {
@@ -122,21 +196,4 @@ public class Nave {
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
     }
-
-    public String getFecha_llegada() {
-        return fecha_llegada;
-    }
-
-    public void setFecha_llegada(String fecha_llegada) {
-        this.fecha_llegada = fecha_llegada;
-    }
-
-    public String getLocalizacion_llegada() {
-        return localizacion_llegada;
-    }
-
-    public void setLocalizacion_llegada(String localizacion_llegada) {
-        this.localizacion_llegada = localizacion_llegada;
-    }
-
 }

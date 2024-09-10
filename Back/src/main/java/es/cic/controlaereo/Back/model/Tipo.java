@@ -15,7 +15,6 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "Tipo")
-
 public class Tipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,95 +22,117 @@ public class Tipo {
     private long id;
 
     @Size(max = 200)
-    @Column(name = "MODELO")
+    @Column(nullable = false, name = "NOMBRE")
+    private String nombre;
+
+    @Size(max = 200)
+    @Column(nullable = false, name = "MODELO")
     private String modelo;
 
-    @Size(max = 500)
-    @Column(name = "DESCRIPCION")
-    private String descripcion;
-    
-    
-    @Column(name = "PESO")
-    private double peso;
+    @Size(max = 200)
+    @Column(nullable = false, name = "FABRICANTE")
+    private String fabricante;
 
-    @Column(name = "LONGITUD")
-    private double longitud;
+    @Column(nullable = false, name = "CAPACIDAD")
+    private Integer capacidad;
+
+    @Column(nullable = false, name = "ES_CIVIL")
+    private boolean esCivil;
+
+    @Column(nullable = false, name = "ES_AEREA")
+    private boolean esAerea;
+
+    @Column(nullable = false, name = "ES_DE_CARGA")
+    private boolean esDeCarga;
 
     @OneToMany(mappedBy = "tipo", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Nave> naves;
 
-    public Tipo(Long id, String modelo, String descripcion, double peso, double longitud, ArrayList<Nave> naves) {
+    public Tipo() {
+    }
+
+    public Tipo(Long id, String nombre, String modelo, String fabricante, Integer capacidad, boolean esCivil, boolean esAerea, boolean esDeCarga, ArrayList<Nave> naves) {
         this.id = id;
+        this.nombre = nombre;
         this.modelo = modelo;
-        this.descripcion = descripcion;
-        this.peso = peso;
-        this.longitud = longitud;
+        this.fabricante = fabricante;
+        this.capacidad = capacidad;
+        this.esCivil = esCivil;
+        this.esAerea = esAerea;
+        this.esDeCarga = esDeCarga;
         this.naves = naves;
     }
 
-    public Tipo(Long id, String modelo, String descripcion, double peso, double longitud) {
-        this.id = id;
-        this.modelo = modelo;
-        this.descripcion = descripcion;
-        this.peso = peso;
-        this.longitud = longitud;
-    }
-
-    public double getPeso() {
-        return peso;
-    }
-
-    public void setPeso(double peso) {
-        this.peso = peso;
-    }
-
-    public double getLongitud() {
-        return longitud;
-    }
-
-    public void setLongitud(double longitud) {
-        this.longitud = longitud;
-    }
-
-    public Tipo() {
-    this.naves = new ArrayList<>();
-    }
-    
+    // Getters y setters
     public long getId() {
         return id;
     }
-    
+
     public void setId(long id) {
         this.id = id;
     }
-    
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getModelo() {
         return modelo;
     }
-    
+
     public void setModelo(String modelo) {
         this.modelo = modelo;
     }
-    
-    public String getDescripcion() {
-        return descripcion;
+
+    public String getFabricante() {
+        return fabricante;
     }
-    
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+
+    public void setFabricante(String fabricante) {
+        this.fabricante = fabricante;
     }
-    
+
+    public Integer getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public boolean isEsCivil() {
+        return esCivil;
+    }
+
+    public void setEsCivil(boolean esCivil) {
+        this.esCivil = esCivil;
+    }
+
+    public boolean isEsAerea() {
+        return esAerea;
+    }
+
+    public void setEsAerea(boolean esAerea) {
+        this.esAerea = esAerea;
+    }
+
+    public boolean isEsDeCarga() {
+        return esDeCarga;
+    }
+
+    public void setEsDeCarga(boolean esDeCarga) {
+        this.esDeCarga = esDeCarga;
+    }
+
     public List<Nave> getNaves() {
         return naves;
     }
-    
-    public void setNaves(ArrayList<Nave> naves) {
+
+    public void setNaves(List<Nave> naves) {
         this.naves = naves;
     }
-
-    public void addNave(Nave nave) {
-        this.naves.add(nave);
-        nave.setTipo(this);
-    }
-
 }
