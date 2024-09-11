@@ -74,7 +74,7 @@ public class Nave {
 
     @ManyToOne
     @JsonIgnoreProperties("naves")
-    @JoinColumn(name = "TIPO_ID")
+    @JoinColumn(name = "TIPO_ID", nullable = true)
     private Tipo tipo;
 
     public Nave() {
@@ -93,6 +93,7 @@ public class Nave {
         this.tipo = tipo;
     }
 
+    // Getters y setters
     public Long getId() {
         return id;
     }

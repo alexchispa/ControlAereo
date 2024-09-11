@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Inicio from '../views/Inicio.vue'
 import Tipo from '../views/Tipo.vue'
 import Nave from '../views/Nave.vue'
-import NaveForm from '../components/NaveForm.vue'
-import TipoForm from '../components/TipoForm.vue'
+import NaveForm from '../components/NaveFormulario.vue'
+import TipoFormulario from '../components/TipoFormulario.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,19 +19,19 @@ const router = createRouter({
       component: Tipo
     },
     {
-      path: '/Nave',
-      name: 'Nave',
+      path: '/nave',
+      name: 'nave',
       component: Nave
     },
     {
-      path: '/NaveForm/:id?',
-      name: 'NaveForm',
+      path: '/NaveFormulario/:id?',
+      name: 'NaveFormulario',
       component: NaveForm
     },
     {
-      path: '/tipoForm/:id?',
-      name: 'TipoForm',
-      component: TipoForm
+      path: '/tipoFormulario/:id?',
+      name: 'TipoFormulario',
+      component: TipoFormulario
     }
   ]
 })

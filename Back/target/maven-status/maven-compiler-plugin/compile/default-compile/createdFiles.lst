@@ -1,3 +1,4 @@
+application.properties
 es/cic/controlaereo/Back/servicio/TipoServicio.class
 es/cic/controlaereo/Back/servicio/NaveServicio.class
 es/cic/controlaereo/Back/repositorio/NaveRepositorio.class

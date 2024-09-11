@@ -48,9 +48,6 @@ public class Tipo {
     @OneToMany(mappedBy = "tipo", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Nave> naves;
 
-    public Tipo() {
-    }
-
     public Tipo(Long id, String nombre, String modelo, String fabricante, Integer capacidad, boolean esCivil, boolean esAerea, boolean esDeCarga, ArrayList<Nave> naves) {
         this.id = id;
         this.nombre = nombre;
@@ -63,7 +60,23 @@ public class Tipo {
         this.naves = naves;
     }
 
-    // Getters y setters
+    public Tipo(Long id, String nombre, String modelo, String fabricante, Integer capacidad, boolean esCivil, boolean esAerea, boolean esDeCarga) {
+        this.id = id;
+        this.nombre = nombre;
+        this.modelo = modelo;
+        this.fabricante = fabricante;
+        this.capacidad = capacidad;
+        this.esCivil = esCivil;
+        this.esAerea = esAerea;
+        this.esDeCarga = esDeCarga;
+        this.naves = new ArrayList<>();
+    }
+
+    
+    public Tipo() {
+    this.naves = new ArrayList<>();
+        }
+
     public long getId() {
         return id;
     }
