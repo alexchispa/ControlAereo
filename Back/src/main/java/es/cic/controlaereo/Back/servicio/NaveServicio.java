@@ -1,6 +1,7 @@
 package es.cic.controlaereo.Back.servicio;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,8 @@ public class NaveServicio {
     }
 
     public Nave getNaveById(Long id) {
-        return naveRepositorio.findById(id).orElse(null);
+        Optional<Nave> nave = naveRepositorio.findById(id);
+        return nave.orElse(null);
     }
 
     public void deleteNaveById(Long id) {

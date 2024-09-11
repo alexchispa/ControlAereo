@@ -26,8 +26,8 @@ public class NaveControlador {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Nave> addNave(@RequestBody Nave nave) {
-        Nave nuevaNave = naveServicio.addNave(nave);
-        return ResponseEntity.ok(nuevaNave);
+            Nave nuevaNave = naveServicio.addNave(nave);
+            return ResponseEntity.ok(nuevaNave);
     }
 
     @GetMapping
