@@ -14,10 +14,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 @Entity
 @Table(name = "Nave")
 public class Nave {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -77,9 +77,11 @@ public class Nave {
     @JoinColumn(name = "TIPO_ID", nullable = true)
     private Tipo tipo;
 
+    // Constructor vacío
     public Nave() {
     }
 
+    // Constructor con parámetros
     public Nave(Long id, String nombre, String piloto, Double peso, Double longitud, Double bodega, Integer carga, Integer capacidadPersonas, Integer anyoFabricacion, Tipo tipo) {
         this.id = id;
         this.nombre = nombre;

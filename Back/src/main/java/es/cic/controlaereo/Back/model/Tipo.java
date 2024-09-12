@@ -19,6 +19,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "Tipo")
 public class Tipo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -51,6 +52,12 @@ public class Tipo {
     @OneToMany(mappedBy = "tipo", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Nave> naves;
 
+    // Constructor sin parámetros (obligatorio para Jackson)
+    public Tipo() {
+        this.naves = new ArrayList<>();
+    }
+
+    // Constructor con anotaciones @JsonProperty
     @JsonCreator
     public Tipo(
         @JsonProperty("id") Long id,
@@ -61,7 +68,7 @@ public class Tipo {
         @JsonProperty("esCivil") boolean esCivil,
         @JsonProperty("esAerea") boolean esAerea,
         @JsonProperty("esDeCarga") boolean esDeCarga,
-        @JsonProperty("naves") ArrayList<Nave> naves
+        @JsonProperty("naves") List<Nave> naves
     ) {
         this.id = id;
         this.nombre = nombre;
@@ -83,10 +90,6 @@ public class Tipo {
         this.esCivil = esCivil;
         this.esAerea = esAerea;
         this.esDeCarga = esDeCarga;
-        this.naves = new ArrayList<>();
-    }
-
-    public Tipo() {
         this.naves = new ArrayList<>();
     }
 
