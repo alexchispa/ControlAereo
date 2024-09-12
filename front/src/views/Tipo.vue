@@ -169,7 +169,6 @@ onMounted(fetchTipos);
   background-color: #e2e8f0;
   border-radius: 15px;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-  color: #bbe1fa;
   word-wrap: break-word;
   white-space: pre-wrap;
   min-height: 80vh; /* Aumenta la altura mínima para ocupar más pantalla verticalmente */
@@ -328,63 +327,76 @@ tbody tr:hover {
   font-size: 1.5rem !important;
 }
 
-/* Diálogos */
-.delete-dialog, .error-dialog {
+.delete-dialog {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000; /* Aumentar el z-index para que se superponga a todos los elementos */
 }
 
-.delete-dialog-content, .error-dialog-content {
-  background-color: #fff;
+.delete-dialog-content {
+  background: #1b262c;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
   text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #ecf0f1;
+  max-width: 400px; /* Limitar ancho del diálogo */
+  margin: auto; /* Centrar horizontalmente */
+  margin-top: 15%; /* Alinearlo más arriba en lugar de centrado vertical */
 }
 
-.delete-dialog-buttons, .error-dialog-buttons {
-  margin-top: 10px;
+.delete-dialog-buttons {
+  margin-top: 20px;
   display: flex;
   justify-content: space-around;
 }
 
-.confirm-button, .cancel-button, .error-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
 .confirm-button {
-  background-color: #28a745;
-  color: #fff;
+  padding: 10px 18px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .confirm-button:hover {
-  background-color: #218838;
+  background-color: #c92a3b;
 }
 
 .cancel-button {
-  background-color: #f0ad4e;
-  color: #fff;
+  padding: 10px 18px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .cancel-button:hover {
-  background-color: #ec971f;
+  background-color: #5a6268;
 }
 
 .error-button {
-  background-color: #d9534f;
-  color: #fff;
+  padding: 10px 18px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .error-button:hover {
@@ -394,5 +406,30 @@ tbody tr:hover {
 .number-cell {
   text-align: right;
   padding-right: 75px;
+}
+
+.error-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.error-dialog-content {
+  background: #1b262c;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #ecf0f1;
+  max-width: 400px; /* Limitar ancho del diálogo */
+  margin: auto; /* Centrar horizontalmente */
+  margin-top: 15%; /* Alinearlo más arriba en lugar de centrado vertical */
 }
 </style>

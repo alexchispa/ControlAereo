@@ -183,7 +183,7 @@ onMounted(fetchTipo);
       <div class="confirmation-dialog-content">
         <p>¿Estás seguro de que deseas actualizar el tipo de nave?</p>
         <div class="confirmation-dialog-buttons">
-          <button @click="confirmSubmit" class="confirm-button">Aceptar</button>
+          <button @click="confirmSubmit" class="submit-button">Aceptar</button>
           <button @click="cancelSubmit" class="cancel-button">Cancelar</button>
         </div>
       </div>
@@ -372,38 +372,24 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 }
 
 .confirmation-dialog-content {
-  background: white;
+  background: #1b262c;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 15px;
   text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #ecf0f1;
+  max-width: 400px; /* Limitar ancho del diálogo */
+  margin: auto; /* Centrar horizontalmente */
 }
 
 .confirmation-dialog-buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-top: 20px;
 }
 
-.confirm-button,
-.cancel-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.confirm-button {
-  background-color: #c0392b;
-  color: white;
-}
-
-.confirm-button:hover {
-  background-color: #e74c3c;
-}
 
 </style>

@@ -16,7 +16,7 @@ const form = reactive({
   bodega: '',
   carga: '',
   capacidadPersonas: '',
-  tipo: null // Debe ser un objeto de tipo
+  tipo: {} // Debe ser un objeto de tipo
 });
 
 // Estado para la ventana emergente
@@ -35,14 +35,16 @@ const readonly = route.query.readonly === 'true'; // Obtener el parámetro reado
 const fetchNave = async () => {
   if (id) {
     try {
+      await fetchTipos();
       const response = await axios.get(`/api/naves/${id}`);
       Object.assign(form, response.data);
-      
-      // Espera a que los tipos estén cargados antes de asignar el tipo
-      await fetchTipos();
 
-      // Asigna el id del tipo al form.tipo
-      form.tipo = response.data.tipo ? response.data.tipo.id : null;
+      // Asigna el objeto tipo completo al form.tipo
+      if (response.data.tipo) {
+        form.tipo = response.data.tipo; // Cambiado para asignar el objeto completo
+      } else {
+        form.tipo = {}; // O null si prefieres
+      }
     } catch (error) {
       console.error('Error fetching nave:', error);
     }
@@ -93,9 +95,9 @@ const validateForm = () => {
 const submitForm = async () => {
   if (!validateForm()) return;
 
-  // Verifica si form.tipo es null y maneja el caso
-  if (form.tipo === null) {
-    form.tipo = { id: null }; // Asegúrate de que tenga un valor predeterminado si es null
+  // Asegúrate de que form.tipo sea un objeto
+  if (form.tipo && typeof form.tipo === 'number') {
+    form.tipo = tipos.find(t => t.id === form.tipo) || {};
   }
 
   if (id) {
@@ -104,6 +106,7 @@ const submitForm = async () => {
     await createNave();
   }
 };
+
 
 const createNave = async () => {
   try {
@@ -181,7 +184,7 @@ onMounted(() => {
 
         <div class="form-group">
           <label for="modificaciones">Modificaciones</label>
-          <textarea id="modificaciones" v-model="form.modificaciones" :readonly="readonly" required></textarea>
+          <textarea id="modificaciones" v-model="form.modificaciones" :readonly="readonly"></textarea>
         </div>
 
         <div class="form-group">
@@ -190,22 +193,22 @@ onMounted(() => {
         </div>
 
         <div class="form-group">
-          <label for="peso">Peso</label>
+          <label for="peso">Peso(kg)</label>
           <input class="number-align" type="number" id="peso" v-model="form.peso" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
-          <label for="longitud">Longitud</label>
+          <label for="longitud">Longitud(m)</label>
           <input class="number-align" type="number" id="longitud" v-model="form.longitud" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
-          <label for="bodega">Bodega</label>
+          <label for="bodega">Bodega(m)</label>
           <input class="number-align" type="number" id="bodega" v-model="form.bodega" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
-          <label for="carga">Carga</label>
+          <label for="carga">Carga(Kg)</label>
           <input class="number-align" type="number" id="carga" v-model="form.carga" :readonly="readonly" required />
         </div>
 
@@ -216,8 +219,7 @@ onMounted(() => {
 
         <div class="form-group">
           <label for="tipo">Tipo</label>
-          <select id="tipo" v-model="form.tipo" :disabled="readonly">
-            <option :value="null">Sin Tipo</option>
+          <select id="tipo" v-model="form.tipo.id" :disabled="readonly" required>
             <option v-for="tipo in tipos" :key="tipo.id" :value="tipo.id">{{ tipo.nombre }}</option>
           </select>
         </div>
@@ -241,7 +243,7 @@ onMounted(() => {
       <div class="confirmation-dialog-content">
         <p>¿Estás seguro de que deseas actualizar la nave?</p>
         <div class="confirmation-dialog-buttons">
-          <button @click="confirmSubmit" class="confirm-button">Aceptar</button>
+          <button @click="confirmSubmit" class="submit-button">Aceptar</button>
           <button @click="cancelSubmit" class="cancel-button">Cancelar</button>
         </div>
       </div>
@@ -390,4 +392,23 @@ button {
   justify-content: center;
   align-items: center;
 }
+
+.confirmation-dialog-content {
+  background: #1b262c;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #ecf0f1;
+  max-width: 400px; /* Limitar ancho del diálogo */
+  margin: auto; /* Centrar horizontalmente */
+}
+
+.confirmation-dialog-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+
 </style>

@@ -80,13 +80,13 @@ const route = useRoute();
 }
 
 .sidebar-link:hover {
-  background-color: #969494; /* Color más claro al pasar el cursor */
-  text-shadow: 0 0 4px white; /* Efecto glow más sutil */
+  background-color: #444;
+  text-shadow: 0 0 4px white;
 }
 
 .sidebar-link.active {
-  background-color: #444; /* Color más oscuro cuando está activo */
-  text-shadow: 0 0 8px white; /* Efecto glow blanco */
+  background-color: #222;
+  text-shadow: 0 0 8px white;
 }
 
 .sidebar-toggle {
@@ -146,7 +146,7 @@ const route = useRoute();
     display: flex;
   }
 
-  .main-content.shifted {
+  .main-content {
     margin-left: 0;
   }
 }

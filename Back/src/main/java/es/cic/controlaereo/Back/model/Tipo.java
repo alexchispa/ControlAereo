@@ -3,6 +3,9 @@ package es.cic.controlaereo.Back.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +51,18 @@ public class Tipo {
     @OneToMany(mappedBy = "tipo", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Nave> naves;
 
-    public Tipo(Long id, String nombre, String modelo, String fabricante, Integer capacidad, boolean esCivil, boolean esAerea, boolean esDeCarga, ArrayList<Nave> naves) {
+    @JsonCreator
+    public Tipo(
+        @JsonProperty("id") Long id,
+        @JsonProperty("nombre") String nombre,
+        @JsonProperty("modelo") String modelo,
+        @JsonProperty("fabricante") String fabricante,
+        @JsonProperty("capacidad") Integer capacidad,
+        @JsonProperty("esCivil") boolean esCivil,
+        @JsonProperty("esAerea") boolean esAerea,
+        @JsonProperty("esDeCarga") boolean esDeCarga,
+        @JsonProperty("naves") ArrayList<Nave> naves
+    ) {
         this.id = id;
         this.nombre = nombre;
         this.modelo = modelo;
@@ -57,7 +71,7 @@ public class Tipo {
         this.esCivil = esCivil;
         this.esAerea = esAerea;
         this.esDeCarga = esDeCarga;
-        this.naves = naves;
+        this.naves = naves != null ? naves : new ArrayList<>();
     }
 
     public Tipo(Long id, String nombre, String modelo, String fabricante, Integer capacidad, boolean esCivil, boolean esAerea, boolean esDeCarga) {
@@ -72,11 +86,11 @@ public class Tipo {
         this.naves = new ArrayList<>();
     }
 
-    
     public Tipo() {
-    this.naves = new ArrayList<>();
-        }
+        this.naves = new ArrayList<>();
+    }
 
+    // Getters y setters
     public long getId() {
         return id;
     }
