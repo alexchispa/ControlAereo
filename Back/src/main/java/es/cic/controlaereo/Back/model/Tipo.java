@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 
+
 @Entity
 @Table(name = "Tipo")
 public class Tipo {
@@ -70,7 +71,7 @@ public class Tipo {
         @JsonProperty("esDeCarga") boolean esDeCarga,
         @JsonProperty("naves") List<Nave> naves
     ) {
-        this.id = id;
+        this.id = (id != null) ? id : 0L; // Manejar el caso en que id sea null
         this.nombre = nombre;
         this.modelo = modelo;
         this.fabricante = fabricante;

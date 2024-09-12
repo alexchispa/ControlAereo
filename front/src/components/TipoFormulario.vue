@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 // Estado del formulario
 const form = reactive({
+  id: null,
   nombre: '',
   modelo: '',
   fabricante: '',
@@ -25,21 +26,32 @@ const id = route.params.id;
 
 const showModal = ref(false); // Estado para controlar la visibilidad del modal
 const modalMessage = ref(''); // Mensaje del modal
-const readonly = route.query.readonly === 'true'; // Obtener el parámetro readonly de la URL
+const readonly = ref(route.query.readonly === 'true'); // Cambiar a ref
+
 
 const fetchTipo = async () => {
   if (id) {
     try {
       const response = await axios.get(`/api/tipos/${id}`);
-      Object.assign(form, response.data);
-      readonly.value = route.query.readonly !== 'true'; // Deshabilitar edición si readonly es true
+      // Verificar que la respuesta sea un objeto válido antes de asignarlo
+      if (response.data && typeof response.data === 'object') {
+        Object.assign(form, response.data);
+        readonly.value = route.query.readonly === 'true'; // Deshabilitar edición si readonly es true
+      } else {
+        console.error('Respuesta no válida recibida:', response.data);
+        modalMessage.value = 'Error: los datos recibidos no son válidos.';
+        showModal.value = true; // Mostrar un mensaje de error en un modal
+      }
     } catch (error) {
       console.error('Error fetching tipo:', error);
+      modalMessage.value = 'Error al obtener los datos del tipo.';
+      showModal.value = true;
     }
   } else {
-    readonly.value = true; // Habilitar edición si no hay id (crear nuevo tipo)
+    readonly.value = false; // Permitir edición si no hay ID (crear nuevo tipo)
   }
 };
+
 
 const validateForm = () => {
   if (form.nombre.length > 200) {
@@ -54,6 +66,11 @@ const validateForm = () => {
   }
   if (form.fabricante.length > 200) {
     modalMessage.value = 'El fabricante no puede exceder los 200 caracteres.';
+    showModal.value = true;
+    return false;
+  }
+  if (form.capacidad == null || form.capacidad < 0) {
+    modalMessage.value = 'La capacidad debe ser un número positivo.';
     showModal.value = true;
     return false;
   }
@@ -78,8 +95,15 @@ const createTipo = async () => {
     router.push('/tipo'); // Redirige a la lista de tipos después de enviar el formulario
   } catch (error) {
     console.error('Error creating tipo:', error);
+    if (error.response && error.response.data) {
+      modalMessage.value = `Error: ${error.response.data.message}`;
+    } else {
+      modalMessage.value = 'Error al crear el tipo.';
+    }
+    showModal.value = true;
   }
 };
+
 
 const confirmSubmit = async () => {
   showConfirmationDialog.value = false;
@@ -111,6 +135,8 @@ const truncate = (text, length) => {
 
 onMounted(fetchTipo);
 </script>
+
+
 <template>
   <div class="container">
     <div class="form-section">
@@ -119,37 +145,44 @@ onMounted(fetchTipo);
         <!-- Campos del formulario -->
         <div class="form-group">
           <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" v-model="form.nombre" :readonly="readonly" required />
+          <!-- Agregar atributo name -->
+          <input type="text" id="nombre" name="nombre" v-model="form.nombre" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="modelo">Modelo</label>
-          <input type="text" id="modelo" v-model="form.modelo" :readonly="readonly" required />
+          <!-- Agregar atributo name -->
+          <input type="text" id="modelo" name="modelo" v-model="form.modelo" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="fabricante">Fabricante</label>
-          <input type="text" id="fabricante" v-model="form.fabricante" :readonly="readonly" required />
+          <!-- Agregar atributo name -->
+          <input type="text" id="fabricante" name="fabricante" v-model="form.fabricante" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="capacidad">Capacidad</label>
-          <input type="number" id="capacidad" v-model="form.capacidad" :readonly="readonly" required />
+          <!-- Agregar atributo name -->
+          <input type="number" id="capacidad" name="capacidad" v-model="form.capacidad" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="esCivil">Es Civil</label>
-          <input type="checkbox" id="esCivil" v-model="form.esCivil" :disabled="readonly" />
+          <!-- Agregar atributo name -->
+          <input type="checkbox" id="esCivil" name="esCivil" v-model="form.esCivil" :disabled="readonly" />
         </div>
 
         <div class="form-group">
           <label for="esAerea">Es Aérea</label>
-          <input type="checkbox" id="esAerea" v-model="form.esAerea" :disabled="readonly" />
+          <!-- Agregar atributo name -->
+          <input type="checkbox" id="esAerea" name="esAerea" v-model="form.esAerea" :disabled="readonly" />
         </div>
 
         <div class="form-group">
           <label for="esDeCarga">Es de Carga</label>
-          <input type="checkbox" id="esDeCarga" v-model="form.esDeCarga" :disabled="readonly" />
+          <!-- Agregar atributo name -->
+          <input type="checkbox" id="esDeCarga" name="esDeCarga" v-model="form.esDeCarga" :disabled="readonly" />
         </div>
 
         <!-- Botones "Guardar/Crear" y "Cancelar" -->
