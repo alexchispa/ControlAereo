@@ -14,12 +14,7 @@
 
     <section class="cta-section">
       <h2>Comienza tu exploración</h2>
-      <div class="cta-buttons">
-        <router-link to="/nave" class="cta-button">Ver Naves</router-link>
-        <router-link to="/tipo" class="cta-button">Ver Tipos</router-link>
-        <router-link to="/NaveFormulario" class="cta-button">Añadir Nave</router-link>
-        <router-link to="/TipoFormulario" class="cta-button">Añadir Tipo</router-link>
-      </div>
+      
     </section>
   </div>
 </template>

@@ -16,7 +16,7 @@ const form = reactive({
   bodega: '',
   carga: '',
   capacidadPersonas: '',
-  tipo: null // Cambia a null para almacenar el objeto Tipo
+  tipo: null // Debe ser un objeto de tipo
 });
 
 // Estado para la ventana emergente
@@ -37,22 +37,29 @@ const fetchNave = async () => {
     try {
       const response = await axios.get(`/api/naves/${id}`);
       Object.assign(form, response.data);
-      // Asegúrate de que el tipo se establezca correctamente
-      form.tipo = response.data.tipo;
+      
+      // Espera a que los tipos estén cargados antes de asignar el tipo
+      await fetchTipos();
+
+      // Asigna el id del tipo al form.tipo
+      form.tipo = response.data.tipo ? response.data.tipo.id : null;
     } catch (error) {
       console.error('Error fetching nave:', error);
     }
   }
 };
 
+
 const fetchTipos = async () => {
   try {
     const response = await axios.get('/api/tipos');
+    tipos.length = 0; // Limpiar el array antes de llenarlo
     tipos.push(...response.data);
   } catch (error) {
     console.error('Error fetching tipos:', error);
   }
 };
+
 
 const validateForm = () => {
   if (form.nombre.length > 200) {
@@ -86,6 +93,11 @@ const validateForm = () => {
 const submitForm = async () => {
   if (!validateForm()) return;
 
+  // Verifica si form.tipo es null y maneja el caso
+  if (form.tipo === null) {
+    form.tipo = { id: null }; // Asegúrate de que tenga un valor predeterminado si es null
+  }
+
   if (id) {
     showConfirmationDialog.value = true;
   } else {
@@ -101,12 +113,13 @@ const createNave = async () => {
       }
     });
     console.log('Nave creada:', form);
-    localStorage.setItem('aviso', 'Nave creada exitosamente'); // Guardar mensaje de aviso
-    router.push('/nave'); // Redirige a la lista de naves después de enviar el formulario
+    localStorage.setItem('aviso', 'Nave creada exitosamente');
+    router.push('/nave');
   } catch (error) {
     console.error('Error creating nave:', error);
   }
 };
+
 
 const confirmSubmit = async () => {
   showConfirmationDialog.value = false;
@@ -136,81 +149,89 @@ const cancel = () => {
 };
 
 onMounted(() => {
-  fetchNave();
   fetchTipos(); // Llama a fetchTipos cuando el componente se monta
+  fetchNave(); // Llama a fetchNave después de fetchTipos
 });
 </script>
 
 <template>
   <div class="form-container">
-    <h1>{{ id ? 'Modificar ' + form.nombre : 'Nueva Nave' }}</h1>
+    <h1>{{ id ? form.nombre : 'Nueva Nave' }}</h1>
     <form @submit.prevent="submitForm">
-      <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" v-model="form.nombre" :readonly="readonly" required />
-      </div>
+      <div class="form-fields">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" v-model="form.nombre" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="piloto">Piloto</label>
-        <input type="text" id="piloto" v-model="form.piloto" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="piloto">Piloto</label>
+          <input type="text" id="piloto" v-model="form.piloto" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="colores">Colores</label>
-        <input type="text" id="colores" v-model="form.colores" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="colores">Colores</label>
+          <input type="text" id="colores" v-model="form.colores" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="base">Base</label>
-        <input type="text" id="base" v-model="form.base" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="base">Base</label>
+          <input type="text" id="base" v-model="form.base" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="modificaciones">Modificaciones</label>
-        <textarea id="modificaciones" v-model="form.modificaciones" :readonly="readonly" required></textarea>
-      </div>
+        <div class="form-group">
+          <label for="modificaciones">Modificaciones</label>
+          <textarea id="modificaciones" v-model="form.modificaciones" :readonly="readonly" required></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="anyoFabricacion">Año de Fabricación</label>
-        <input type="number" id="anyoFabricacion" v-model="form.anyoFabricacion" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="anyoFabricacion">Año de Fabricación</label>
+          <input class="number-align" type="number" id="anyoFabricacion" v-model="form.anyoFabricacion" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="peso">Peso</label>
-        <input type="number" step="0.001" id="peso" v-model="form.peso" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="peso">Peso</label>
+          <input class="number-align" type="number" id="peso" v-model="form.peso" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="longitud">Longitud</label>
-        <input type="number" step="0.01" id="longitud" v-model="form.longitud" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="longitud">Longitud</label>
+          <input class="number-align" type="number" id="longitud" v-model="form.longitud" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="bodega">Bodega</label>
-        <input type="number" step="0.01" id="bodega" v-model="form.bodega" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="bodega">Bodega</label>
+          <input class="number-align" type="number" id="bodega" v-model="form.bodega" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="carga">Carga</label>
-        <input type="number" id="carga" v-model="form.carga" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="carga">Carga</label>
+          <input class="number-align" type="number" id="carga" v-model="form.carga" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="capacidadPersonas">Capacidad de Personas</label>
-        <input type="number" id="capacidadPersonas" v-model="form.capacidadPersonas" :readonly="readonly" required />
-      </div>
+        <div class="form-group">
+          <label for="capacidadPersonas">Capacidad de Personas</label>
+          <input class="number-align" type="number" id="capacidadPersonas" v-model="form.capacidadPersonas" :readonly="readonly" required />
+        </div>
 
-      <div class="form-group">
-        <label for="tipo">Tipo</label>
-        <select id="tipo" v-model="form.tipo" :disabled="readonly">
-    <!-- Se elimina el atributo 'required' para permitir que el campo sea opcional -->
-        <option :value="null" disabled></option>
-        <option v-for="tipo in tipos" :key="tipo.id" :value="tipo">{{ tipo.nombre }}</option>
-    </select>
+        <div class="form-group">
+          <label for="tipo">Tipo</label>
+          <select id="tipo" v-model="form.tipo" :disabled="readonly">
+            <option :value="null">Sin Tipo</option>
+            <option v-for="tipo in tipos" :key="tipo.id" :value="tipo.id">{{ tipo.nombre }}</option>
+          </select>
+        </div>
       </div>
-
-      <div class="form-actions">
-        <button type="submit" class="submit-button" v-if="!readonly">{{ id ? 'Modificar' : 'Crear' }}</button>
+      <!-- Botones: crear/modificar o solo cancelar -->
+      <div 
+        class="form-actions" 
+        :class="{ 'single-button': readonly }" 
+      >
+        <!-- Botón "Crear/Modificar" solo se muestra si no es readonly -->
+        <button v-if="!readonly" type="submit" class="submit-button">
+          {{ id ? 'Guardar' : 'Crear' }}
+        </button>
+        <!-- Botón "Cancelar" siempre está presente -->
         <button type="button" @click="cancel" class="cancel-button">Cancelar</button>
       </div>
     </form>
@@ -227,6 +248,7 @@ onMounted(() => {
     </div>
   </div>
 
+  <!-- Modal de Mensajes -->
   <div v-if="showModal" class="modal">
     <div class="modal-content">
       <span class="close" @click="showModal = false">&times;</span>
@@ -236,7 +258,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Contenedor del formulario */
+input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
 .form-container {
   max-width: 700px;
   margin: 40px auto;
@@ -245,6 +270,12 @@ onMounted(() => {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+.form-fields {
+  max-height: 620px; /* Ajusta la altura máxima según sea necesario */
+  overflow-y: auto; /* Habilita el scroll vertical */
+  margin-bottom: 20px; /* Espacio entre los campos y los botones */
 }
 
 /* Título */
@@ -270,6 +301,12 @@ label {
   margin-bottom: 8px;
 }
 
+.number-align {
+  text-align: right;
+  width: 10%;
+  padding-right: 10px;
+}
+
 input, textarea, select {
   width: 100%;
   padding: 12px;
@@ -290,6 +327,10 @@ input:focus, textarea:focus, select:focus {
 .form-actions {
   display: flex;
   justify-content: space-between;
+}
+
+.form-actions.single-button {
+  justify-content: flex-end; /* Solo el botón cancelar debe estar alineado a la derecha */
 }
 
 button {
@@ -328,6 +369,7 @@ button {
   background-color: #e53e3e;
   color: white;
   box-shadow: 0 4px 10px rgba(229, 62, 62, 0.4);
+  justify-content: flex-end;
 }
 
 .cancel-button:hover {

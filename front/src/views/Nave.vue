@@ -88,77 +88,67 @@ onMounted(fetchNaves);
 </script>
 
 <template>
-    <div class="nave-container">
-      <h1 class="title">Naves</h1>
-      <button @click="createNave" class="create-button">Crear</button>
-      <div v-for="aviso in avisos" :key="aviso.id" class="modal-aviso">{{ aviso.mensaje }}</div> <!-- Mostrar mensajes de aviso -->
-      <div class="table-container">
-        <table class="custom-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Piloto</th>
-              <th>Colores</th>
-              <th>Base</th>
-              <th>Modificaciones</th>
-              <th>Año de Fabricación</th>
-              <th>Peso</th>
-              <th>Longitud</th>
-              <th>Bodega</th>
-              <th>Carga</th>
-              <th>Capacidad de Personas</th>
-              <th>Tipo</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="nave in naves" :key="nave.id">
-              <td>{{ nave.nombre }}</td>
-              <td>{{ nave.piloto }}</td>
-              <td>{{ nave.colores }}</td>
-              <td>{{ nave.base }}</td>
-              <td>{{ nave.modificaciones }}</td>
-              <td>{{ nave.anyoFabricacion }}</td>
-              <td>{{ nave.peso }}</td>
-              <td>{{ nave.longitud }}</td>
-              <td>{{ nave.bodega }}</td>
-              <td>{{ nave.carga }}</td>
-              <td>{{ nave.capacidadPersonas }}</td>
-              <td v-if="nave.tipo">{{ nave.tipo.nombre }}</td>
-              <td v-else></td>
-              <td class="action-buttons">
-                <button @click="viewNave(nave.id)" class="action-button">Ver</button>
-                <button @click="updateNave(nave.id)" class="action-button">Editar</button>
-                <button @click="deleteNave(nave.id)" class="action-button delete-button">Borrar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <!-- Ventana emergente de confirmación de eliminación -->
-      <div v-if="showDeleteDialog" class="delete-dialog">
-        <div class="delete-dialog-content">
-          <p>¿Estás seguro de que deseas borrar esta nave?</p>
-          <div class="delete-dialog-buttons">
-            <button @click="confirmDelete" class="confirm-button">Confirmar</button>
-            <button @click="cancelDelete" class="cancel-button">Cancelar</button>
-          </div>
+  <div class="nave-container">
+    <h1 class="title">Naves</h1>
+    <button @click="createNave" class="create-button">Crear</button>
+    <div v-for="aviso in avisos" :key="aviso.id" class="modal-aviso">{{ aviso.mensaje }}</div> <!-- Mostrar mensajes de aviso -->
+    <div class="table-container">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th class="nombre-col">Nombre</th> <!-- Añadido nombre-col -->
+            <th>Piloto</th>
+            <th>Base</th>
+            <th>Carga(Kg)</th>
+            <th class="capacidad-col">Capacidad (Pers.)</th>
+            <th class="collapse-tip">Tipo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="nave in naves" :key="nave.id">
+            <td class="truncate nombre-col">{{ nave.nombre }}</td> <!-- Añadido nombre-col -->
+            <td class="truncate">{{ nave.piloto }}</td>
+            <td class="truncate">{{ nave.base }}</td>
+            <td class="truncate number-align">{{ nave.carga }}</td>
+            <td class="truncate number-align">{{ nave.capacidadPersonas }}</td>
+            <td class="truncate collapse-tip" v-if="nave.tipo">{{ nave.tipo.nombre }}</td>
+            <td class="truncate" v-else></td>
+            <td class="action-buttons">
+              <button @click="viewNave(nave.id)" class="action-button">Ver</button>
+              <button @click="updateNave(nave.id)" class="action-button">Editar</button>
+              <button @click="deleteNave(nave.id)" class="action-button delete-button">Borrar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Ventana emergente de confirmación de eliminación -->
+    <div v-if="showDeleteDialog" class="delete-dialog">
+      <div class="delete-dialog-content">
+        <p>¿Estás seguro de que deseas borrar esta nave?</p>
+        <div class="delete-dialog-buttons">
+          <button @click="confirmDelete" class="confirm-button">Confirmar</button>
+          <button @click="cancelDelete" class="cancel-button">Cancelar</button>
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
+
+
 
 <style scoped>
 .nave-container {
-  max-width: 2000px;
+  max-width: 1400px;
   margin: 40px auto; /* Ajuste en el margen superior */
+  text-align: center;
   padding: 20px;
   background-color: #e2e8f0;
   border-radius: 15px;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
   color: #bbe1fa;
-  text-align: center; /* Cambiado de center a left para un mejor alineamiento */
   word-wrap: break-word;
   white-space: pre-wrap;
   min-height: 80vh; /* Aumenta la altura mínima para ocupar más pantalla verticalmente */
@@ -171,12 +161,6 @@ onMounted(fetchNaves);
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
-}
-
-.description {
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-  color: #bbe1fa;
 }
 
 .create-button {
@@ -223,13 +207,10 @@ onMounted(fetchNaves);
   margin-top: 20px;
   background-color: #dfe6e9;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  word-wrap: break-word;
-  white-space: pre-wrap;
 }
 
 th, td {
   padding: 16px;
-  text-align: left;
   font-size: 1rem;
   border-bottom: 1px solid #34495e;
   color: #1d2122;
@@ -252,17 +233,41 @@ tbody tr {
 
 td {
   word-wrap: break-word; /* Asegura que las palabras largas se rompan */
-  white-space: normal; /* Permite que el texto se ajuste al ancho de la celda */
-  overflow-wrap: break-word; /* Asegura que las palabras largas se rompan */
-  max-width: 200px; /* Ajusta este valor según sea necesario */
+  white-space: nowrap; /* Evita el ajuste de línea dentro de las celdas */
+  overflow: hidden; /* Oculta el contenido que desborda */
+  text-overflow: ellipsis; /* Muestra puntos suspensivos cuando el texto es demasiado largo */
+  position: relative; /* Necesario para el tooltip */
+}
+
+.nombre-col {
+  max-width: 200px; /* Limita el ancho de la columna de nombre */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collapse-tip {
+  max-width: 200px; /* Limita el ancho de la columna de nombre */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.capacidad-col {
+  max-width: 100px; /* Ajusta el ancho de la columna de capacidad */
+}
+
+.number-align {
+  text-align: right;
+  padding-right: 75px;
+ 
 }
 
 tbody tr:hover {
-  background-color: #28527a;
+  background-color: #c9d3dd;
 }
 
 .action-buttons {
   display: flex;
+  justify-content: flex-end; /* Alinea los botones a la derecha */
   gap: 10px; /* Espacio entre los botones */
 }
 

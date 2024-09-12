@@ -24,7 +24,7 @@ const router = createRouter({
       component: Nave
     },
     {
-      path: '/NaveFormulario/:id?',
+      path: '/naveFormulario/:id?',
       name: 'NaveFormulario',
       component: NaveForm
     },

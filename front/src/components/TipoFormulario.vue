@@ -25,19 +25,19 @@ const id = route.params.id;
 
 const showModal = ref(false); // Estado para controlar la visibilidad del modal
 const modalMessage = ref(''); // Mensaje del modal
-const isEditable = ref(false); // Estado para controlar si el formulario es editable
+const readonly = route.query.readonly === 'true'; // Obtener el parámetro readonly de la URL
 
 const fetchTipo = async () => {
   if (id) {
     try {
       const response = await axios.get(`/api/tipos/${id}`);
       Object.assign(form, response.data);
-      isEditable.value = route.query.readonly !== 'true'; // Deshabilitar edición si readonly es true
+      readonly.value = route.query.readonly !== 'true'; // Deshabilitar edición si readonly es true
     } catch (error) {
       console.error('Error fetching tipo:', error);
     }
   } else {
-    isEditable.value = true; // Habilitar edición si no hay id (crear nuevo tipo)
+    readonly.value = true; // Habilitar edición si no hay id (crear nuevo tipo)
   }
 };
 
@@ -104,81 +104,81 @@ const cancel = () => {
   router.push('/tipo');
 };
 
+// Función para truncar texto largo
 const truncate = (text, length) => {
   return text.length > length ? text.substring(0, length) + '...' : text;
 };
 
 onMounted(fetchTipo);
 </script>
-
 <template>
-  <div class="form-container">
-    <h1>{{ id ? 'Modificar ' + form.nombre : 'Nuevo Tipo' }}</h1>
-
-    <!-- Disposición con flexbox: el formulario a la izquierda, la lista de naves a la derecha -->
-    <div class="form-and-naves-container">
-      
-      <!-- Formulario -->
-      <form @submit.prevent="submitForm" class="form-left">
+  <div class="container">
+    <div class="form-section">
+      <h1>{{ id ? form.nombre : 'Nuevo Tipo' }}</h1>
+      <form @submit.prevent="submitForm">
+        <!-- Campos del formulario -->
         <div class="form-group">
           <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" v-model="form.nombre" :readonly="!isEditable" required />
+          <input type="text" id="nombre" v-model="form.nombre" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="modelo">Modelo</label>
-          <input type="text" id="modelo" v-model="form.modelo" :readonly="!isEditable" required />
+          <input type="text" id="modelo" v-model="form.modelo" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="fabricante">Fabricante</label>
-          <input type="text" id="fabricante" v-model="form.fabricante" :readonly="!isEditable" required />
+          <input type="text" id="fabricante" v-model="form.fabricante" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="capacidad">Capacidad</label>
-          <input type="number" id="capacidad" v-model="form.capacidad" :readonly="!isEditable" required />
+          <input type="number" id="capacidad" v-model="form.capacidad" :readonly="readonly" required />
         </div>
 
         <div class="form-group">
           <label for="esCivil">Es Civil</label>
-          <input type="checkbox" id="esCivil" v-model="form.esCivil" :disabled="!isEditable" />
+          <input type="checkbox" id="esCivil" v-model="form.esCivil" :disabled="readonly" />
         </div>
 
         <div class="form-group">
           <label for="esAerea">Es Aérea</label>
-          <input type="checkbox" id="esAerea" v-model="form.esAerea" :disabled="!isEditable" />
+          <input type="checkbox" id="esAerea" v-model="form.esAerea" :disabled="readonly" />
         </div>
 
         <div class="form-group">
           <label for="esDeCarga">Es de Carga</label>
-          <input type="checkbox" id="esDeCarga" v-model="form.esDeCarga" :disabled="!isEditable" />
+          <input type="checkbox" id="esDeCarga" v-model="form.esDeCarga" :disabled="readonly" />
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="submit-button" v-if="isEditable">{{ id ? 'Guardar cambios' : 'Crear' }}</button>
+        <!-- Botones "Guardar/Crear" y "Cancelar" -->
+        <div 
+          class="form-actions" 
+          :class="{ 'single-button': readonly }" 
+        >
+          <!-- Botón "Crear/Modificar" solo se muestra si no es readonly -->
+          <button v-if="!readonly" type="submit" class="submit-button">
+            {{ id ? 'Guardar' : 'Crear' }}
+          </button>
+          <!-- Botón "Cancelar" siempre está presente -->
           <button type="button" @click="cancel" class="cancel-button">Cancelar</button>
         </div>
       </form>
+    </div>
 
-      <!-- Lista de Naves a la derecha con scroll -->
-      <div class="naves-container" v-if="id">
-        <h3>Naves Asociadas</h3>
-        <ul class="naves-list">
+    <!-- Mostrar siempre la lista de naves asociadas -->
+    <div class="naves-section">
+      <h2>Naves Asociadas</h2>
+      <div class="naves-list-container">
+        <ul class="naves-list" v-if="form.naves.length > 0">
           <li v-for="nave in form.naves" :key="nave.id">{{ truncate(nave.nombre, 50) }}</li>
         </ul>
-      </div>
-
-    </div>
-
-    <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ modalMessage }}</p>
+        <p class="message-adjust" v-else>¡Todavía no tiene ninguna nave asociada!</p>
       </div>
     </div>
-    
-    <!-- Ventana Emergente de Confirmación -->
+
+    <!-- Modal de confirmación -->
     <div v-if="showConfirmationDialog" class="confirmation-dialog">
       <div class="confirmation-dialog-content">
         <p>¿Estás seguro de que deseas actualizar el tipo de nave?</p>
@@ -188,24 +188,58 @@ onMounted(fetchTipo);
         </div>
       </div>
     </div>
+
+    <!-- Modal de error -->
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <p>{{ modalMessage }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
 
+
 <style scoped>
-.form-container {
-  max-width: 800px;
+input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
   margin: 40px auto;
+  max-width: 1200px;
   padding: 20px;
+}
+
+.form-section, .naves-section {
+  flex: 1;
   background-color: #e2e8f0;
   border-radius: 15px;
+  padding: 20px;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
   color: #34495e;
+  overflow: hidden;
+}
+
+.naves-section {
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 h1 {
   font-size: 2rem;
   margin-bottom: 20px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  padding-top: 20px;
   text-align: center;
 }
 
@@ -220,9 +254,8 @@ label {
 }
 
 input[type="text"],
-input[type="number"],
-textarea {
-  width: 100%;
+input[type="number"] {
+  width: calc(100% - 22px); /* Ajustar el ancho con margen y borde */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -232,9 +265,15 @@ input[type="checkbox"] {
   margin-right: 10px;
 }
 
+.naves-list-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 .naves-list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 .naves-list li {
@@ -244,37 +283,51 @@ input[type="checkbox"] {
   border-radius: 5px;
 }
 
+/* Botones */
 .form-actions {
   display: flex;
   justify-content: space-between;
 }
 
-.submit-button,
-.cancel-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
+.form-actions.single-button {
+  justify-content: flex-end; /* Solo el botón cancelar debe estar alineado a la derecha */
 }
 
+  
+button {
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Botón de enviar */
 .submit-button {
-  background-color: #3282b8;
+  background-color: #48bb78;
   color: white;
+  box-shadow: 0 4px 10px rgba(72, 187, 120, 0.4);
 }
 
 .submit-button:hover {
-  background-color: #218838;
+  background-color: #38a169;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(72, 187, 120, 0.6);
 }
 
 .cancel-button {
-  background-color: #6c757d;
+  background-color: #e53e3e;
   color: white;
+  box-shadow: 0 4px 10px rgba(229, 62, 62, 0.4);
 }
 
 .cancel-button:hover {
-  background-color: #5a6268;
+  background-color: #c53030;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(229, 62, 62, 0.6);
 }
+
 
 .modal {
   position: fixed;
@@ -301,6 +354,12 @@ input[type="checkbox"] {
   top: 10px;
   right: 10px;
   cursor: pointer;
+}
+
+.message-adjust {
+  text-align: center;
+  font-weight: bold;
+
 }
 
 .confirmation-dialog {
@@ -347,12 +406,4 @@ input[type="checkbox"] {
   background-color: #e74c3c;
 }
 
-.cancel-button {
-  background-color: #3498db;
-  color: white;
-}
-
-.cancel-button:hover {
-  background-color: #2980b9;
-}
 </style>
