@@ -3,9 +3,6 @@ package es.cic.controlaereo.Back.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
-
 
 @Entity
 @Table(name = "Tipo")
@@ -24,17 +19,14 @@ public class Tipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private long id;
+    private Long id;
 
-    @Size(max = 200)
     @Column(nullable = false, name = "NOMBRE")
     private String nombre;
 
-    @Size(max = 200)
     @Column(nullable = false, name = "MODELO")
     private String modelo;
 
-    @Size(max = 200)
     @Column(nullable = false, name = "FABRICANTE")
     private String fabricante;
 
@@ -53,35 +45,12 @@ public class Tipo {
     @OneToMany(mappedBy = "tipo", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Nave> naves;
 
-    // Constructor sin parámetros (obligatorio para Jackson)
+    // Default constructor
     public Tipo() {
         this.naves = new ArrayList<>();
     }
 
-    // Constructor con anotaciones @JsonProperty
-    @JsonCreator
-    public Tipo(
-        @JsonProperty("id") Long id,
-        @JsonProperty("nombre") String nombre,
-        @JsonProperty("modelo") String modelo,
-        @JsonProperty("fabricante") String fabricante,
-        @JsonProperty("capacidad") Integer capacidad,
-        @JsonProperty("esCivil") boolean esCivil,
-        @JsonProperty("esAerea") boolean esAerea,
-        @JsonProperty("esDeCarga") boolean esDeCarga,
-        @JsonProperty("naves") List<Nave> naves
-    ) {
-        this.id = (id != null) ? id : 0L; // Manejar el caso en que id sea null
-        this.nombre = nombre;
-        this.modelo = modelo;
-        this.fabricante = fabricante;
-        this.capacidad = capacidad;
-        this.esCivil = esCivil;
-        this.esAerea = esAerea;
-        this.esDeCarga = esDeCarga;
-        this.naves = naves != null ? naves : new ArrayList<>();
-    }
-
+    // All arguments constructor
     public Tipo(Long id, String nombre, String modelo, String fabricante, Integer capacidad, boolean esCivil, boolean esAerea, boolean esDeCarga) {
         this.id = id;
         this.nombre = nombre;
