@@ -1,5 +1,7 @@
 /home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/BackendApplicationTests.java
-/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/ControladoresUnitarioTest.java
-/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/NaveIntegrationTest.java
-/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/NaveRepositorioTest.java
-/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/TipoIntegrationTest.java
+/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/nave/NaveIntegrationTest.java
+/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/nave/NaveRepositorioTest.java
+/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/nave/NaveServicioTest.java
+/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/tipo/ControladorTipoTest.java
+/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/tipo/TipoIntegrationTest.java
+/home/curso15/proyectos/ControlAereo/Back/src/test/java/es/cic/controlaereo/Back/tipo/TipoServicioTest.java

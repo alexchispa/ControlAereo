@@ -41,6 +41,8 @@ public class NaveServicio {
     }
 
     public void deleteNaveById(Long id) {
-        naveRepositorio.deleteById(id);
+        if (naveRepositorio.existsById(id)) {
+            naveRepositorio.deleteById(id);
+        }
     }
 }
